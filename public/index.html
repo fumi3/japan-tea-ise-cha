@@ -268,10 +268,10 @@ section{padding:120px 64px;max-width:1400px;margin:0 auto}
 .modal-order-total strong{color:var(--gold)}
 
 /* Payment tabs */
-.payment-method-tabs{display:flex;gap:8px;margin-bottom:24px}
-.pay-tab{flex:1;background:none;border:1px solid rgba(201,169,110,.2);padding:10px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.2em;color:rgba(245,240,232,.4);cursor:none;transition:all .3s;text-align:center}
+.payment-method-tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.pay-tab{flex:1;min-width:calc(50% - 6px);background:none;border:1px solid rgba(201,169,110,.2);padding:9px 6px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.15em;color:rgba(245,240,232,.4);cursor:none;transition:all .3s;text-align:center;white-space:nowrap}
 .pay-tab.active{border-color:var(--gold);color:var(--gold)}
-.pay-tab:disabled{opacity:.3;cursor:not-allowed}
+.pay-tab:disabled{opacity:.25;cursor:not-allowed}
 .square-section-label{font-size:10px;letter-spacing:.35em;color:rgba(245,240,232,.4);text-transform:uppercase;display:block;margin-bottom:12px}
 
 /* Square card container */
@@ -665,6 +665,9 @@ footer{border-top:1px solid rgba(201,169,110,.1);padding:64px;display:grid;grid-
       <a id="receiptLink" href="#" target="_blank" class="success-receipt" style="display:none">
         View Receipt →
       </a>
+      <button class="success-receipt" style="display:block;margin:12px auto 0;border-color:rgba(245,240,232,.2);color:rgba(245,240,232,.5);background:none;cursor:none" onclick="returnHome()">
+        ← Return to Home
+      </button>
     </div>
 
     <!-- ─ Payment form ─ -->
@@ -694,18 +697,21 @@ footer{border-top:1px solid rgba(201,169,110,.1);padding:64px;display:grid;grid-
         <button class="pay-tab active" id="tabCard" onclick="switchTab('card')">💳 Card</button>
         <button class="pay-tab" id="tabGoogle" onclick="switchTab('google')" disabled>G Pay</button>
         <button class="pay-tab" id="tabApple" onclick="switchTab('apple')" disabled>⌘ Apple Pay</button>
+        <button class="pay-tab" id="tabPaypal" onclick="switchTab('paypal')" disabled>PayPal</button>
       </div>
 
       <!-- Google Pay container -->
       <div id="google-pay-button" style="display:none"></div>
       <!-- Apple Pay container -->
       <div id="apple-pay-button" style="display:none"></div>
+      <!-- PayPal container -->
+      <div id="paypal-button" style="display:none;margin-bottom:8px"></div>
 
       <!-- Card form -->
       <div id="card-payment-section">
         <span class="square-section-label">Card Information</span>
         <div id="card-container"></div>
-        <button id="pay-button" disabled>
+        <button id="pay-button" onclick="handlePayment()" disabled>
           Pay — <span id="payBtnTotal">¥0</span>
         </button>
       </div>
@@ -937,7 +943,7 @@ async function initSquare() {
         '.input-container':          { borderColor: 'rgba(201,169,110,.3)', borderRadius: '0px' },
         '.input-container.is-focus': { borderColor: 'rgba(201,169,110,.8)' },
         '.input-container.is-error': { borderColor: '#E8A0A0' },
-        'input':                     { backgroundColor: 'rgba(15,31,23,.8)', color: '#F5F0E8', fontFamily: '"Cormorant Garamond", serif', fontSize: '16px' },
+        'input':                     { backgroundColor: 'rgba(15,31,23,.8)', color: '#F5F0E8', fontFamily: 'Georgia, serif', fontSize: '16px' },
         'input::placeholder':        { color: 'rgba(245,240,232,.25)' },
         '.message-text':             { color: 'rgba(245,240,232,.5)' },
       }
@@ -946,25 +952,45 @@ async function initSquare() {
     statusEl.innerHTML = '';
     document.getElementById('pay-button').disabled = false;
 
+    // 共通 paymentRequest ファクトリ
+    function makePaymentRequest() {
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      return squarePayments.paymentRequest({
+        countryCode:  'JP',
+        currencyCode: 'JPY',
+        total: { amount: String(total), label: 'JAPAN TEA ISE-CHA' },
+      });
+    }
+
     // Google Pay
     try {
-      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const req = squarePayments.paymentRequest({ countryCode:'JP', currencyCode:'JPY', total:{ amount:String(total), label:'JAPAN TEA ISE-CHA' } });
-      const gp = await squarePayments.googlePay(req);
+      const gp = await squarePayments.googlePay(makePaymentRequest());
       await gp.attach('#google-pay-button');
       document.getElementById('tabGoogle').disabled = false;
-      gp.addEventListener('ontokenization', e => handleTokenizedPayment(e.detail.tokenResult));
-    } catch(_) {}
+      gp.addEventListener('ontokenization', e => {
+        if (e.detail?.tokenResult) handleTokenizedPayment(e.detail.tokenResult);
+      });
+    } catch(_) { console.log('Google Pay unavailable:', _); }
 
     // Apple Pay
     try {
-      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const req = squarePayments.paymentRequest({ countryCode:'JP', currencyCode:'JPY', total:{ amount:String(total), label:'JAPAN TEA ISE-CHA' } });
-      const ap = await squarePayments.applePay(req);
+      const ap = await squarePayments.applePay(makePaymentRequest());
       await ap.attach('#apple-pay-button');
       document.getElementById('tabApple').disabled = false;
-      ap.addEventListener('ontokenization', e => handleTokenizedPayment(e.detail.tokenResult));
-    } catch(_) {}
+      ap.addEventListener('ontokenization', e => {
+        if (e.detail?.tokenResult) handleTokenizedPayment(e.detail.tokenResult);
+      });
+    } catch(_) { console.log('Apple Pay unavailable:', _); }
+
+    // PayPal
+    try {
+      const pp = await squarePayments.paypal(makePaymentRequest());
+      await pp.attach('#paypal-button');
+      document.getElementById('tabPaypal').disabled = false;
+      pp.addEventListener('ontokenization', e => {
+        if (e.detail?.tokenResult) handleTokenizedPayment(e.detail.tokenResult);
+      });
+    } catch(_) { console.log('PayPal unavailable:', _); }
 
   } catch (err) {
     statusEl.innerHTML = `<p class="payment-error">⚠️ Square初期化エラー: ${err.message || err}</p>`;
@@ -997,12 +1023,17 @@ function closeCheckout() {
 }
 
 function switchTab(tab) {
-  ['card','google','apple'].forEach(t => {
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+  ['card','google','apple','paypal'].forEach(t => {
+    const el = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if (el) el.classList.toggle('active', t===tab);
   });
-  document.getElementById('card-payment-section').style.display = tab==='card' ? '' : 'none';
+  document.getElementById('card-payment-section').style.display = tab==='card'   ? '' : 'none';
   document.getElementById('google-pay-button').style.display    = tab==='google' ? '' : 'none';
-  document.getElementById('apple-pay-button').style.display     = tab==='apple' ? '' : 'none';
+  document.getElementById('apple-pay-button').style.display     = tab==='apple'  ? '' : 'none';
+  document.getElementById('paypal-button').style.display        = tab==='paypal' ? '' : 'none';
+  // PayPal/Google Pay/Apple Pay はボタン内蔵のため pay-button を非表示
+  const payBtn = document.getElementById('pay-button');
+  if (payBtn) payBtn.style.display = tab==='card' ? '' : 'none';
 }
 
 // ────────────────────────────────────────────
@@ -1092,6 +1123,11 @@ function showSuccess() {
   document.getElementById('successScreen').classList.add('show');
   cart = []; renderCart();
   squareCard = null; squarePayments = null;
+}
+
+function returnHome() {
+  closeCheckout();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ESC
