@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JAPAN TEA ISE-CHA | 精神的源流から、一服の静寂を。</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Square SDK: server.js の /api/square-config で env を確認後 JS で動的に挿入 -->
+<style>
+:root {
+  --deep-green: #0F1F17; --forest: #1A3326; --sage: #2D5240;
+  --mist: #8AA898; --cream: #F5F0E8; --parchment: #EDE8DC;
+  --gold: #C9A96E; --gold-light: #E2C89A;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--deep-green);color:var(--cream);font-family:'Cormorant Garamond','Noto Serif JP',serif;overflow-x:hidden;cursor:none}
+
+/* ── Cursor ── */
+.cursor{width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform .15s;mix-blend-mode:difference}
+.cursor-ring{width:32px;height:32px;border:1px solid rgba(201,169,110,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:all .4s cubic-bezier(.25,.46,.45,.94)}
+
+/* ── Gold line ── */
+.gold-line-fixed{position:fixed;right:48px;top:0;width:1px;height:100vh;background:linear-gradient(to bottom,transparent,var(--gold) 20%,var(--gold) 80%,transparent);opacity:.3;z-index:10;pointer-events:none}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:28px 64px;transition:background .4s ease}
+nav::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,31,23,.9),transparent);pointer-events:none}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;letter-spacing:.35em;color:var(--cream);text-transform:uppercase;text-decoration:none;position:relative;z-index:1}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:40px;list-style:none;position:relative;z-index:1}
+.nav-links a{font-size:11px;letter-spacing:.3em;color:rgba(245,240,232,.7);text-decoration:none;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.menu-btn{background:none;border:none;cursor:none;display:flex;flex-direction:column;gap:5px;padding:8px}
+.menu-btn span{display:block;width:24px;height:1px;background:var(--cream);transition:all .3s}
+.menu-btn span:last-child{width:16px}
+
+/* ── Cart button ── */
+.cart-btn{background:none;border:none;cursor:none;color:var(--cream);position:relative;display:flex;align-items:center;padding:8px;transition:color .3s}
+.cart-btn:hover{color:var(--gold)}
+.cart-count{position:absolute;top:2px;right:2px;background:var(--gold);color:var(--deep-green);font-size:10px;font-weight:600;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:all .3s;font-family:sans-serif}
+.cart-count.visible{opacity:1;transform:scale(1)}
+
+/* ── Menu overlay ── */
+.menu-overlay{position:fixed;inset:0;background:var(--forest);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s cubic-bezier(.25,.46,.45,.94)}
+.menu-overlay.open{opacity:1;pointer-events:all}
+.menu-overlay a{display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,64px);font-weight:300;font-style:italic;color:var(--cream);text-decoration:none;letter-spacing:.05em;line-height:1.6;transition:color .3s,opacity .5s,transform .5s;opacity:0;transform:translateY(20px)}
+.menu-overlay.open a{opacity:1;transform:translateY(0)}
+.menu-overlay.open a:nth-child(1){transition-delay:.1s}
+.menu-overlay.open a:nth-child(2){transition-delay:.18s}
+.menu-overlay.open a:nth-child(3){transition-delay:.26s}
+.menu-overlay.open a:nth-child(4){transition-delay:.34s}
+.menu-overlay.open a:nth-child(5){transition-delay:.42s}
+.menu-overlay.open a:nth-child(6){transition-delay:.5s}
+.menu-overlay a:hover{color:var(--gold)}
+.menu-close{position:absolute;top:32px;right:64px;background:none;border:none;color:var(--cream);font-size:24px;cursor:none;font-family:'Cormorant Garamond',serif;opacity:.7;transition:opacity .3s}
+.menu-close:hover{opacity:1}
+
+/* ── HERO ── */
+#hero{height:100vh;position:relative;display:flex;align-items:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(45,82,64,.4),transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(26,51,38,.6),transparent 50%),linear-gradient(160deg,#0A1A10,#1A3326 40%,#0F2018);overflow:hidden}
+.mist-layer{position:absolute;width:200%;height:180px;background:linear-gradient(to right,transparent,rgba(138,168,152,.2) 30%,rgba(138,168,152,.15) 60%,transparent);border-radius:50%;animation:mistDrift 20s ease-in-out infinite;pointer-events:none}
+.mist-layer:nth-child(1){bottom:35%;animation-duration:22s;opacity:.6}
+.mist-layer:nth-child(2){bottom:45%;animation-duration:28s;animation-delay:-8s;opacity:.4}
+.mist-layer:nth-child(3){bottom:55%;animation-duration:18s;animation-delay:-14s;opacity:.3}
+@keyframes mistDrift{0%,100%{transform:translateX(-10%) scaleY(1)}50%{transform:translateX(5%) scaleY(1.2)}}
+.tea-rows{position:absolute;bottom:0;left:0;right:0;height:55%}
+.particle{position:absolute;width:2px;height:2px;background:var(--gold-light);border-radius:50%;opacity:0;animation:particleFade 6s ease-in-out infinite}
+@keyframes particleFade{0%,100%{opacity:0;transform:translateY(0)}50%{opacity:.6;transform:translateY(-20px)}}
+.hero-content{position:relative;z-index:2;padding:0 64px 80px;width:100%;display:grid;grid-template-columns:1fr 1fr;align-items:flex-end}
+.hero-en{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,7vw,96px);font-weight:300;font-style:italic;line-height:1;color:var(--cream);opacity:0;transform:translateY(30px);animation:fadeUp 1.4s cubic-bezier(.25,.46,.45,.94) .3s forwards}
+.hero-en .gold-word{color:var(--gold)}
+.hero-subtitle-ja{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:200;letter-spacing:.3em;color:rgba(245,240,232,.6);margin-top:20px;opacity:0;animation:fadeUp 1.4s cubic-bezier(.25,.46,.45,.94) .6s forwards}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:32px}
+.hero-tagline-vertical{writing-mode:vertical-rl;font-family:'Shippori Mincho',serif;font-size:12px;letter-spacing:.4em;color:var(--gold);opacity:0;animation:fadeIn 2s ease 1s forwards}
+.hero-cta{display:inline-flex;align-items:center;gap:16px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.4);padding-bottom:8px;opacity:0;animation:fadeUp 1.4s cubic-bezier(.25,.46,.45,.94) .9s forwards;transition:color .3s,border-color .3s}
+.hero-cta:hover{color:var(--gold);border-color:var(--gold)}
+.hero-cta::after{content:'→';transition:transform .3s}
+.hero-cta:hover::after{transform:translateX(4px)}
+.scroll-indicator{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeIn 2s ease 1.5s forwards}
+.scroll-indicator span{font-size:9px;letter-spacing:.4em;color:rgba(245,240,232,.4);text-transform:uppercase}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ── Dividers & Shared ── */
+.gold-divider{display:flex;align-items:center;gap:24px;padding:0 64px;max-width:1400px;margin:0 auto}
+.gold-divider::before,.gold-divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:.4}
+.gold-divider-symbol{color:var(--gold);font-size:14px;opacity:.7;letter-spacing:.3em}
+section{padding:120px 64px;max-width:1400px;margin:0 auto}
+.section-label{font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:block}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4.5vw,60px);font-weight:300;font-style:italic;line-height:1.1;color:var(--cream);margin-bottom:24px}
+.section-title-ja{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:200;color:rgba(245,240,232,.5);letter-spacing:.25em;margin-bottom:48px;display:block}
+.body-text{font-size:18px;font-weight:300;line-height:1.8;color:rgba(245,240,232,.75);max-width:560px}
+.gold-rule{width:48px;height:1px;background:var(--gold);margin-bottom:32px;opacity:.7}
+
+/* ── ABOUT ── */
+#about{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;padding-top:140px}
+.about-visual{position:relative;height:560px;border-radius:2px;overflow:hidden;background:var(--forest)}
+.about-visual-inner{width:100%;height:100%;background:radial-gradient(ellipse at 40% 60%,rgba(45,82,64,.8),transparent 70%),linear-gradient(135deg,#1A3326,#0F2018);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.about-visual-kanji{font-family:'Shippori Mincho',serif;font-size:140px;color:rgba(201,169,110,.12);writing-mode:vertical-rl;letter-spacing:.1em;line-height:1;user-select:none}
+.about-visual-badge{position:absolute;bottom:32px;right:32px;border:1px solid rgba(201,169,110,.4);padding:16px 20px;text-align:center}
+.about-visual-badge .num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);display:block;line-height:1}
+.about-visual-badge .label{font-size:9px;letter-spacing:.3em;color:rgba(245,240,232,.5);display:block;margin-top:4px}
+
+/* ── TERROIR ── */
+#terroir{padding-top:0}
+.terroir-header{text-align:center;margin-bottom:80px}
+.terroir-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.terroir-card{position:relative;height:520px;overflow:hidden;cursor:none}
+.terroir-card:hover .terroir-card-bg{transform:scale(1.04)}
+.terroir-card-bg{position:absolute;inset:0;transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
+.terroir-card:nth-child(1) .terroir-card-bg{background:linear-gradient(160deg,rgba(45,82,64,.6),rgba(15,31,23,.9)),radial-gradient(ellipse at 30% 70%,rgba(45,82,64,.7),transparent)}
+.terroir-card:nth-child(2) .terroir-card-bg{background:linear-gradient(200deg,rgba(26,51,38,.5),rgba(10,20,15,.9)),radial-gradient(ellipse at 60% 40%,rgba(45,82,64,.6),transparent)}
+.terroir-illustration{position:absolute;bottom:0;left:0;right:0;opacity:.3}
+.terroir-card-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:48px}
+.terroir-region-en{font-size:11px;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.terroir-name{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;font-style:italic;color:var(--cream);line-height:1;margin-bottom:8px}
+.terroir-name-ja{font-family:'Shippori Mincho',serif;font-size:14px;color:rgba(245,240,232,.5);letter-spacing:.3em;margin-bottom:24px;display:block}
+.terroir-desc{font-size:15px;line-height:1.7;color:rgba(245,240,232,.65);font-weight:300;max-width:340px}
+.terroir-corner-vertical{position:absolute;top:40px;right:40px;writing-mode:vertical-rl;font-family:'Shippori Mincho',serif;font-size:11px;letter-spacing:.5em;color:rgba(201,169,110,.4)}
+
+/* ── RITUAL ── */
+#ritual{position:relative}
+.ritual-header{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:80px}
+.ritual-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.ritual-step{border-top:1px solid rgba(201,169,110,.2);padding-top:24px}
+.ritual-step-num{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:rgba(201,169,110,.2);line-height:1;margin-bottom:16px}
+.ritual-step-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--cream);margin-bottom:8px}
+.ritual-step-title-ja{font-family:'Noto Serif JP',serif;font-size:11px;font-weight:200;color:var(--gold);letter-spacing:.25em;display:block;margin-bottom:12px}
+.ritual-step-desc{font-size:13px;line-height:1.7;color:rgba(245,240,232,.5)}
+.pairing-section{margin-top:96px;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.pairing-card{background:rgba(45,82,64,.1);border:1px solid rgba(201,169,110,.1);padding:48px;position:relative;overflow:hidden;transition:background .4s}
+.pairing-card:hover{background:rgba(45,82,64,.2)}
+.pairing-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.pairing-card:hover::before{opacity:.6}
+.pairing-num{font-size:13px;letter-spacing:.3em;color:var(--gold);margin-bottom:20px;display:block}
+.pairing-title{font-family:'Shippori Mincho',serif;font-size:22px;color:var(--cream);margin-bottom:8px;font-weight:500}
+.pairing-title-en{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(245,240,232,.4);display:block;margin-bottom:20px}
+.pairing-desc{font-size:14px;line-height:1.8;color:rgba(245,240,232,.55)}
+
+/* ── JOURNAL ── */
+#journal{padding-top:0}
+.journal-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:64px}
+.journal-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2px}
+.journal-card{position:relative;overflow:hidden;cursor:none}
+.journal-card-inner{padding:40px 32px;height:100%;min-height:280px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid rgba(201,169,110,.1);transition:border-color .4s,background .4s}
+.journal-card:hover .journal-card-inner{border-color:rgba(201,169,110,.3);background:rgba(45,82,64,.1)}
+.journal-card:first-child .journal-card-inner{min-height:380px}
+.journal-tag{font-size:9px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;display:block}
+.journal-title{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--cream);line-height:1.5;margin-bottom:16px}
+.journal-card:first-child .journal-title{font-size:24px}
+.journal-excerpt{font-size:13px;line-height:1.7;color:rgba(245,240,232,.4);flex:1}
+.journal-read-more{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.3em;color:var(--gold);text-decoration:none;text-transform:uppercase;margin-top:24px;opacity:.7;transition:opacity .3s}
+.journal-read-more:hover{opacity:1}
+
+/* ═══════════════════════════════════════
+   SHOP
+═══════════════════════════════════════ */
+#shop{padding-top:0}
+.shop-header{margin-bottom:64px}
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.product-card{position:relative;cursor:none;overflow:hidden;border:1px solid rgba(201,169,110,.08);transition:border-color .4s}
+.product-card:hover{border-color:rgba(201,169,110,.25)}
+.product-visual{height:360px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0A1A10}
+/* 実商品写真 */
+.product-visual-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  transition:transform .9s cubic-bezier(.25,.46,.45,.94);
+  display:block;
+}
+.product-card:hover .product-visual-img{transform:scale(1.06)}
+/* 写真の上にかかるグラデーションオーバーレイ */
+.product-visual-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(
+    to bottom,
+    rgba(10,20,15,.15) 0%,
+    rgba(10,20,15,.0) 40%,
+    rgba(10,20,15,.55) 85%,
+    rgba(10,20,15,.8) 100%
+  );
+  transition:background .4s ease;
+}
+.product-card:hover .product-visual-overlay{
+  background:linear-gradient(
+    to bottom,
+    rgba(10,20,15,.05) 0%,
+    rgba(10,20,15,.0) 30%,
+    rgba(10,20,15,.45) 80%,
+    rgba(10,20,15,.7) 100%
+  );
+}
+/* グレード・限定バッジ (z-index 2 で写真の上) */
+.product-grade{z-index:2}
+.product-limited{z-index:2}
+/* 旧アイコン非表示 */
+.product-icon{display:none}
+.product-grade{position:absolute;top:20px;left:20px;font-size:9px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;z-index:2}
+.product-limited{position:absolute;top:20px;right:20px;border:1px solid rgba(201,169,110,.5);padding:4px 10px;font-size:8px;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;z-index:2}
+.product-info{padding:28px 32px 32px;background:rgba(15,31,23,.4)}
+.product-name-ja{font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;color:var(--cream);display:block;margin-bottom:4px}
+.product-name-en{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(245,240,232,.4);display:block;margin-bottom:16px}
+.product-desc{font-size:13px;line-height:1.7;color:rgba(245,240,232,.5);margin-bottom:24px;min-height:56px}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--gold)}
+.product-price small{font-size:13px;color:rgba(201,169,110,.5);margin-left:4px}
+.add-to-cart-btn{background:none;border:1px solid rgba(201,169,110,.4);padding:10px 20px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--cream);cursor:none;transition:all .3s;position:relative;overflow:hidden}
+.add-to-cart-btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s;z-index:-1}
+.add-to-cart-btn:hover{color:var(--deep-green);border-color:var(--gold)}
+.add-to-cart-btn:hover::before{transform:scaleX(1)}
+.add-to-cart-btn.added{color:var(--deep-green);border-color:var(--gold);background:var(--gold)}
+
+/* ── CART DRAWER ── */
+.cart-drawer{position:fixed;top:0;right:0;width:420px;height:100vh;background:var(--forest);z-index:300;transform:translateX(100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:1px solid rgba(201,169,110,.1)}
+.cart-drawer.open{transform:translateX(0)}
+.cart-drawer-overlay{position:fixed;inset:0;background:rgba(15,31,23,.7);z-index:299;opacity:0;pointer-events:none;transition:opacity .5s;backdrop-filter:blur(4px)}
+.cart-drawer-overlay.open{opacity:1;pointer-events:all}
+.cart-header{padding:32px 32px 24px;border-bottom:1px solid rgba(201,169,110,.1);display:flex;align-items:center;justify-content:space-between}
+.cart-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--cream)}
+.cart-close-btn{background:none;border:none;color:rgba(245,240,232,.5);font-size:20px;cursor:none;transition:color .3s;line-height:1}
+.cart-close-btn:hover{color:var(--cream)}
+.cart-items{flex:1;overflow-y:auto;padding:24px 32px}
+.cart-empty{text-align:center;padding:60px 0;color:rgba(245,240,232,.3);font-style:italic;font-size:18px}
+.cart-item{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid rgba(201,169,110,.08);align-items:flex-start;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.cart-item-thumb{width:64px;height:64px;background:var(--sage);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.8}
+.cart-item-details{flex:1}
+.cart-item-name{font-family:'Shippori Mincho',serif;font-size:14px;color:var(--cream);margin-bottom:4px}
+.cart-item-price{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gold)}
+.cart-item-qty{display:flex;align-items:center;gap:12px;margin-top:8px}
+.qty-btn{background:none;border:1px solid rgba(201,169,110,.3);color:var(--cream);width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:none;transition:all .2s}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qty-num{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--cream);min-width:20px;text-align:center}
+.cart-item-remove{background:none;border:none;color:rgba(245,240,232,.2);font-size:16px;cursor:none;transition:color .3s;padding:4px;align-self:flex-start}
+.cart-item-remove:hover{color:rgba(245,240,232,.7)}
+.cart-footer{padding:24px 32px 32px;border-top:1px solid rgba(201,169,110,.1)}
+.cart-subtotal{display:flex;justify-content:space-between;margin-bottom:8px}
+.cart-subtotal span{font-size:12px;letter-spacing:.2em;color:rgba(245,240,232,.4)}
+.cart-subtotal strong{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);font-weight:300}
+.cart-tax-note{font-size:11px;color:rgba(245,240,232,.2);margin-bottom:24px;letter-spacing:.1em}
+.checkout-btn{width:100%;background:var(--gold);border:none;padding:18px;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.35em;text-transform:uppercase;color:var(--deep-green);cursor:none;transition:background .3s,opacity .3s}
+.checkout-btn:hover{background:var(--gold-light)}
+.checkout-btn:disabled{opacity:.4;cursor:not-allowed}
+.square-trust{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;opacity:.3}
+.square-trust span{font-size:10px;letter-spacing:.2em;color:var(--cream)}
+.sq-icon{width:16px;height:16px;background:var(--cream);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--deep-green);font-size:9px;font-weight:900;font-family:sans-serif;flex-shrink:0}
+
+/* ── CHECKOUT MODAL ── */
+.checkout-modal{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;padding:20px}
+.checkout-modal.open{opacity:1;pointer-events:all}
+.checkout-modal-bg{position:absolute;inset:0;background:rgba(10,20,15,.85);backdrop-filter:blur(8px)}
+.checkout-modal-inner{position:relative;width:100%;max-width:560px;background:var(--forest);border:1px solid rgba(201,169,110,.15);padding:48px;transform:translateY(20px);transition:transform .4s cubic-bezier(.25,.46,.45,.94);max-height:90vh;overflow-y:auto}
+.checkout-modal.open .checkout-modal-inner{transform:translateY(0)}
+.modal-close{position:absolute;top:20px;right:24px;background:none;border:none;color:rgba(245,240,232,.4);font-size:22px;cursor:none;transition:color .3s;line-height:1}
+.modal-close:hover{color:var(--cream)}
+.modal-header{margin-bottom:32px}
+.modal-label{font-size:9px;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:8px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-style:italic;color:var(--cream);font-weight:300}
+.modal-order-summary{background:rgba(15,31,23,.5);padding:20px;margin-bottom:28px;border:1px solid rgba(201,169,110,.08)}
+.modal-order-row{display:flex;justify-content:space-between;font-size:13px;color:rgba(245,240,232,.5);padding:4px 0}
+.modal-order-total{display:flex;justify-content:space-between;padding-top:12px;margin-top:8px;border-top:1px solid rgba(201,169,110,.1);font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream)}
+.modal-order-total strong{color:var(--gold)}
+
+/* Payment tabs */
+.payment-method-tabs{display:flex;gap:8px;margin-bottom:24px}
+.pay-tab{flex:1;background:none;border:1px solid rgba(201,169,110,.2);padding:10px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.2em;color:rgba(245,240,232,.4);cursor:none;transition:all .3s;text-align:center}
+.pay-tab.active{border-color:var(--gold);color:var(--gold)}
+.pay-tab:disabled{opacity:.3;cursor:not-allowed}
+.square-section-label{font-size:10px;letter-spacing:.35em;color:rgba(245,240,232,.4);text-transform:uppercase;display:block;margin-bottom:12px}
+
+/* Square card container */
+#card-container{min-height:90px;margin-bottom:16px;background:rgba(15,31,23,.4);padding:2px}
+
+/* Buyer email */
+.buyer-email-field{margin-bottom:20px}
+.buyer-email-field label{font-size:10px;letter-spacing:.3em;color:rgba(245,240,232,.4);display:block;margin-bottom:8px;text-transform:uppercase}
+.buyer-email-field input{width:100%;background:rgba(15,31,23,.6);border:1px solid rgba(201,169,110,.25);padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--cream);outline:none;transition:border-color .3s}
+.buyer-email-field input:focus{border-color:rgba(201,169,110,.6)}
+.buyer-email-field input::placeholder{color:rgba(245,240,232,.25)}
+
+#pay-button{width:100%;background:var(--gold);border:none;padding:18px;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.35em;text-transform:uppercase;color:var(--deep-green);cursor:none;transition:all .3s;margin-top:16px;position:relative}
+#pay-button:hover:not(:disabled){background:var(--gold-light)}
+#pay-button:disabled{opacity:.4;cursor:not-allowed}
+
+#payment-status-container{margin-top:16px;text-align:center;font-family:'Cormorant Garamond',serif;font-size:14px;line-height:1.6}
+.payment-error{color:#E8A0A0;font-style:italic}
+.payment-loading{color:rgba(245,240,232,.5);font-style:italic}
+.square-powered{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;opacity:.3;font-size:10px;letter-spacing:.2em;color:var(--cream)}
+
+/* Spinner */
+.spinner{display:inline-block;width:14px;height:14px;border:1px solid rgba(15,31,23,.3);border-top-color:var(--deep-green);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SUCCESS SCREEN ── */
+.success-screen{display:none;text-align:center;padding:24px 0}
+.success-screen.show{display:block}
+.success-icon{width:72px;height:72px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:32px;animation:successPulse .6s ease}
+@keyframes successPulse{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-style:italic;color:var(--cream);margin-bottom:16px}
+.success-msg{font-size:14px;color:rgba(245,240,232,.5);line-height:1.8}
+.success-receipt{display:inline-block;margin-top:20px;border:1px solid rgba(201,169,110,.3);padding:10px 24px;font-size:11px;letter-spacing:.3em;color:var(--gold);text-decoration:none;text-transform:uppercase;transition:all .3s}
+.success-receipt:hover{background:rgba(201,169,110,.1)}
+
+/* ── SHOP CTA ── */
+#shop-cta{text-align:center;padding:160px 64px;position:relative;max-width:100%;background:linear-gradient(to bottom,var(--deep-green),var(--forest),var(--deep-green))}
+.cta-circle{width:320px;height:320px;border:1px solid rgba(201,169,110,.15);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);animation:rotateSlow 30s linear infinite}
+.cta-circle:nth-child(2){width:480px;height:480px;animation-duration:45s;animation-direction:reverse;border-color:rgba(201,169,110,.08)}
+@keyframes rotateSlow{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.cta-content{position:relative;z-index:2}
+.cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5vw,72px);font-weight:300;font-style:italic;color:var(--cream);margin-bottom:24px;line-height:1.1}
+.cta-subtitle{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:200;color:rgba(245,240,232,.5);letter-spacing:.3em;margin-bottom:56px;display:block}
+.cta-btn{display:inline-block;border:1px solid var(--gold);padding:18px 56px;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.35em;text-transform:uppercase;color:var(--cream);text-decoration:none;transition:all .4s;position:relative;overflow:hidden}
+.cta-btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.25,.46,.45,.94);z-index:-1}
+.cta-btn:hover{color:var(--deep-green)}
+.cta-btn:hover::before{transform:scaleX(1)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid rgba(201,169,110,.1);padding:64px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;max-width:100%}
+.footer-brand{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.35em;color:var(--cream);display:block;margin-bottom:16px}
+.footer-brand span{color:var(--gold)}
+.footer-tagline{font-family:'Noto Serif JP',serif;font-size:12px;font-weight:200;color:rgba(245,240,232,.3);letter-spacing:.25em}
+.footer-nav-title{font-size:10px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;display:block}
+.footer-nav-links{list-style:none}
+.footer-nav-links li{margin-bottom:10px}
+.footer-nav-links a{font-size:13px;color:rgba(245,240,232,.4);text-decoration:none;letter-spacing:.1em;transition:color .3s}
+.footer-nav-links a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(201,169,110,.08);padding:24px 64px;display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:10px;letter-spacing:.2em;color:rgba(245,240,232,.2)}
+
+/* ── Reveal ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.35s}
+.reveal-delay-4{transition-delay:.5s}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  nav{padding:20px 32px}
+  .nav-links{display:none}
+  section{padding:80px 32px}
+  #about{grid-template-columns:1fr}
+  .hero-content{grid-template-columns:1fr;padding:0 32px 60px}
+  .hero-right{align-items:flex-start;margin-top:24px}
+  .terroir-grid,.shop-grid,.ritual-steps,.pairing-section{grid-template-columns:1fr}
+  .ritual-header{grid-template-columns:1fr}
+  .journal-grid{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr;padding:48px 32px}
+  .footer-bottom{padding:20px 32px;flex-direction:column;gap:8px}
+  .gold-line-fixed,.cart-drawer{width:100%}
+  .checkout-modal-inner{padding:32px 24px}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="gold-line-fixed"></div>
+
+<!-- ══ Menu Overlay ══════════════════════════ -->
+<div class="menu-overlay" id="menuOverlay">
+  <button class="menu-close" id="menuClose">✕ Close</button>
+  <div style="text-align:center">
+    <a href="#about">Our Story</a>
+    <a href="#terroir">Terroir</a>
+    <a href="#ritual">The Ritual</a>
+    <a href="#journal">Journal</a>
+    <a href="#shop">Shop</a>
+    <a href="#shop-cta">Contact</a>
+  </div>
+</div>
+
+<!-- ══ Navigation ════════════════════════════ -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">JAPAN TEA <span>ISE-CHA</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#terroir">Terroir</a></li>
+    <li><a href="#ritual">Ritual</a></li>
+    <li><a href="#shop">Shop</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" id="cartBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="menu-btn" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+    <svg class="tea-rows" viewBox="0 0 1440 400" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="rowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#2D5240;stop-opacity:0.8"/>
+          <stop offset="100%" style="stop-color:#0F1F17;stop-opacity:0.2"/>
+        </linearGradient>
+      </defs>
+      <g fill="url(#rowGrad)" opacity="0.6">
+        <ellipse cx="720" cy="420" rx="680" ry="22"/>
+        <ellipse cx="720" cy="390" rx="580" ry="18"/>
+        <ellipse cx="720" cy="362" rx="490" ry="15"/>
+        <ellipse cx="720" cy="337" rx="410" ry="12"/>
+        <ellipse cx="720" cy="315" rx="340" ry="10"/>
+        <ellipse cx="720" cy="296" rx="278" ry="8"/>
+        <ellipse cx="720" cy="280" rx="225" ry="7"/>
+        <ellipse cx="720" cy="266" rx="178" ry="6"/>
+      </g>
+      <g stroke="#C9A96E" stroke-width="0.5" opacity="0.12">
+        <line x1="200" y1="395" x2="1240" y2="395"/>
+        <line x1="260" y1="368" x2="1180" y2="368"/>
+        <line x1="320" y1="343" x2="1120" y2="343"/>
+      </g>
+    </svg>
+    <div class="particle" style="left:15%;top:40%;animation-delay:0s"></div>
+    <div class="particle" style="left:25%;top:55%;animation-delay:1.5s"></div>
+    <div class="particle" style="left:45%;top:35%;animation-delay:3s"></div>
+    <div class="particle" style="left:65%;top:50%;animation-delay:.8s"></div>
+    <div class="particle" style="left:80%;top:42%;animation-delay:2.2s"></div>
+  </div>
+  <div class="hero-content">
+    <div>
+      <h1 class="hero-en">A Sip of<br><span class="gold-word">Serenity.</span></h1>
+      <p class="hero-subtitle-ja">精神的源流から、一服の静寂を。</p>
+      <a href="#shop" class="hero-cta" style="margin-top:32px;display:inline-flex">Shop Now</a>
+    </div>
+    <div class="hero-right">
+      <p class="hero-tagline-vertical">伊勢神宮の杜が育む、最古の茶</p>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="gold-divider"><div class="gold-divider-symbol">◆</div></div>
+
+<!-- ══ ABOUT ═════════════════════════════════ -->
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-visual-inner">
+      <p class="about-visual-kanji">伊勢茶</p>
+    </div>
+    <div class="about-visual-badge">
+      <span class="num">800<small style="font-size:18px">年</small></span>
+      <span class="label">History of Ise-cha</span>
+    </div>
+  </div>
+  <div>
+    <span class="section-label reveal">Our Story</span>
+    <h2 class="section-title reveal reveal-delay-1">Where the Sacred<br>Meets the Leaf.</h2>
+    <span class="section-title-ja reveal reveal-delay-2">神域の霧が宿る、葉の記憶。</span>
+    <div class="gold-rule reveal reveal-delay-2"></div>
+    <p class="body-text reveal reveal-delay-3">伊勢志摩の山間に、800年以上の歴史を刻む茶の文化があります。伊勢神宮の霊気と、鈴鹿山脈から流れる清冽な霧が、他のどこにもない「かぶせ茶」の甘みと旨みを生み出します。</p>
+    <p class="body-text reveal reveal-delay-3" style="margin-top:20px;font-style:italic;color:rgba(245,240,232,.5)">The mountains of Ise-Shima carry over eight centuries of tea cultivation. Sacred mists from the Suzuka range create a terroir found nowhere else on earth.</p>
+  </div>
+</section>
+
+<!-- ══ TERROIR ════════════════════════════════ -->
+<section id="terroir" style="padding-top:0">
+  <div class="terroir-header reveal">
+    <span class="section-label">Terroir</span>
+    <h2 class="section-title">The Lands of<br>Ise-cha.</h2>
+    <span class="section-title-ja">二つの源流、それぞれの個性。</span>
+  </div>
+  <div class="terroir-grid">
+    <div class="terroir-card reveal">
+      <div class="terroir-card-bg"></div>
+      <svg class="terroir-illustration" viewBox="0 0 700 200" preserveAspectRatio="none">
+        <defs><linearGradient id="tg1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#2D5240;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#0F1F17;stop-opacity:0"/></linearGradient></defs>
+        <ellipse cx="350" cy="220" rx="330" ry="30" fill="url(#tg1)"/>
+        <ellipse cx="350" cy="195" rx="270" ry="22" fill="url(#tg1)"/>
+        <path d="M0 200 L200 60 L350 120 L500 40 L700 200Z" fill="#0F1F17" opacity="0.5"/>
+      </svg>
+      <div class="terroir-corner-vertical">SUZUKA MOUNTAINS</div>
+      <div class="terroir-card-content">
+        <span class="terroir-region-en">Suzuka Region</span>
+        <h3 class="terroir-name">Suzuka</h3>
+        <span class="terroir-name-ja">鈴鹿</span>
+        <p class="terroir-desc">鈴鹿山脈の岩礦が育む、力強い旨みと深い余韻。<em style="display:block;margin-top:8px;font-style:italic;color:rgba(245,240,232,.4);font-size:13px">Bold umami. Mineral depth. Mountain power.</em></p>
+      </div>
+    </div>
+    <div class="terroir-card reveal reveal-delay-1">
+      <div class="terroir-card-bg"></div>
+      <svg class="terroir-illustration" viewBox="0 0 700 200" preserveAspectRatio="none">
+        <defs><linearGradient id="tg2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#1A3326;stop-opacity:0.7"/><stop offset="100%" style="stop-color:#0A1A10;stop-opacity:0"/></linearGradient></defs>
+        <path d="M0 160 Q175 130 350 155 Q525 180 700 150 L700 200 L0 200Z" fill="url(#tg2)"/>
+        <path d="M0 140 Q175 110 350 135 Q525 160 700 130" stroke="#8AA898" stroke-width="1" fill="none" opacity="0.3"/>
+      </svg>
+      <div class="terroir-corner-vertical">MIYAGAWA RIVER</div>
+      <div class="terroir-card-content">
+        <span class="terroir-region-en">Watarai Region</span>
+        <h3 class="terroir-name">Watarai</h3>
+        <span class="terroir-name-ja">度会</span>
+        <p class="terroir-desc">清流・宮川の霧が育む、澄んだ香りと繊細な甘み。<em style="display:block;margin-top:8px;font-style:italic;color:rgba(245,240,232,.4);font-size:13px">Delicate sweetness. River mist. Ethereal clarity.</em></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RITUAL ══════════════════════════════════ -->
+<section id="ritual">
+  <div class="ritual-header">
+    <div>
+      <span class="section-label reveal">The Ritual</span>
+      <h2 class="section-title reveal reveal-delay-1">The Art of<br>Preparation.</h2>
+      <span class="section-title-ja reveal reveal-delay-2">一服の所作に、宿る美学。</span>
+    </div>
+    <p class="body-text reveal" style="align-self:flex-end">お茶を淹れるとは、一瞬に魂を込めることです。温度、時間、水——すべてが揃ったとき、はじめて伊勢茶の本質が杯に宿ります。</p>
+  </div>
+  <div class="ritual-steps">
+    <div class="ritual-step reveal"><div class="ritual-step-num">01</div><h3 class="ritual-step-title">Heat</h3><span class="ritual-step-title-ja">温める</span><p class="ritual-step-desc">湯温70〜75℃に整える。沸騰直後のお湯を一度茶碗に注ぎ、余熱で温度を調節します。</p></div>
+    <div class="ritual-step reveal reveal-delay-1"><div class="ritual-step-num">02</div><h3 class="ritual-step-title">Measure</h3><span class="ritual-step-title-ja">量る</span><p class="ritual-step-desc">茶葉3g、一杯あたり。多すぎず、少なすぎず——この均衡が味わいの礎となります。</p></div>
+    <div class="ritual-step reveal reveal-delay-2"><div class="ritual-step-num">03</div><h3 class="ritual-step-title">Steep</h3><span class="ritual-step-title-ja">待つ</span><p class="ritual-step-desc">60秒、静かに待ちます。この沈黙の中に、葉の旨みが静かに解き放たれていきます。</p></div>
+    <div class="ritual-step reveal reveal-delay-3"><div class="ritual-step-num">04</div><h3 class="ritual-step-title">Pour</h3><span class="ritual-step-title-ja">注ぐ</span><p class="ritual-step-desc">最後の一滴まで注ぎ切ること。この「黄金の一滴」に、最も深い旨みが凝縮されています。</p></div>
+  </div>
+  <div class="pairing-section">
+    <div class="pairing-card reveal"><span class="pairing-num">Pairing I</span><h3 class="pairing-title">結び羊羹</h3><span class="pairing-title-en">Musubi Yokan — Bound Sweet Bean</span><p class="pairing-desc">伊勢の和菓子職人が手掛ける、結び形の羊羹。鈴鹿のかぶせ茶との相性は、この上ない調和を生み出します。</p></div>
+    <div class="pairing-card reveal reveal-delay-1"><span class="pairing-num">Pairing II</span><h3 class="pairing-title">檜の水もち</h3><span class="pairing-title-en">Hinoki Mizu-mochi — Cypress Water Mochi</span><p class="pairing-desc">宮川の清流水と、三重の檜の香りを纏った水もち。度会のかぶせ茶と溶け合う清澄な余韻。</p></div>
+  </div>
+</section>
+
+<!-- ══ JOURNAL ═════════════════════════════════ -->
+<section id="journal" style="padding-top:0">
+  <div class="journal-header">
+    <div>
+      <span class="section-label reveal">Journal — The Shade</span>
+      <h2 class="section-title reveal reveal-delay-1">From Our<br>Garden.</h2>
+    </div>
+    <a href="#" class="hero-cta reveal" style="margin-bottom:8px">All Stories</a>
+  </div>
+  <div class="journal-grid">
+    <div class="journal-card reveal"><div class="journal-card-inner"><span class="journal-tag">Tea Knowledge</span><h3 class="journal-title">なぜ伊勢茶は、日陰で甘くなるのか？<br><em style="font-size:14px;font-style:italic;font-family:'Cormorant Garamond',serif;color:rgba(245,240,232,.4)">Why Shade Makes Ise-cha Sweet</em></h3><p class="journal-excerpt">かぶせ茶の秘密は、遮光という名の「待つ技術」にあります。光を断ち、葉に旨みを凝縮させる——</p><a href="#" class="journal-read-more">Read more →</a></div></div>
+    <div class="journal-card reveal reveal-delay-1"><div class="journal-card-inner"><span class="journal-tag">History</span><h3 class="journal-title">伊勢神宮と、お茶の深い繋がりについて</h3><p class="journal-excerpt">800年前、外宮の神事に捧げられた茶の葉の記録が今も残ります...</p><a href="#" class="journal-read-more">Read more →</a></div></div>
+    <div class="journal-card reveal reveal-delay-2"><div class="journal-card-inner"><span class="journal-tag">Season</span><h3 class="journal-title">一番茶の収穫、八十八夜の奇跡</h3><p class="journal-excerpt">夏も近づく八十八夜、鈴鹿の茶畑に一年で最も柔らかな新芽が芽吹きます...</p><a href="#" class="journal-read-more">Read more →</a></div></div>
+  </div>
+</section>
+
+<!-- ══ SHOP ════════════════════════════════════ -->
+<section id="shop" style="padding-top:0">
+  <div class="shop-header">
+    <span class="section-label reveal">Shop</span>
+    <h2 class="section-title reveal reveal-delay-1">Select Your<br>Terroir.</h2>
+    <span class="section-title-ja reveal reveal-delay-2">産地を選び、物語を手に取る。</span>
+  </div>
+  <div class="shop-grid">
+
+    <div class="product-card reveal" data-id="1" data-name="鈴鹿かぶせ茶 特上" data-price="4800" data-price-label="¥4,800">
+      <div class="product-visual">
+        <img class="product-visual-img" src="/images/product-shrine.png" alt="鈴鹿かぶせ茶 特上 — 缶・パウチ">
+        <div class="product-visual-overlay"></div>
+        <span class="product-grade">Suzuka · Premium</span>
+        <span class="product-limited">限定品</span>
+      </div>
+      <div class="product-info">
+        <span class="product-name-ja">鈴鹿かぶせ茶 特上</span>
+        <span class="product-name-en">Suzuka Kabuse-cha · Premium</span>
+        <p class="product-desc">鈴鹿山脈の岩礦が育む、力強い旨みと深い余韻。遮光20日間、職人の手摘み。</p>
+        <div class="product-footer">
+          <span class="product-price">¥4,800<small>/50g</small></span>
+          <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal reveal-delay-1" data-id="2" data-name="度会かぶせ茶 上煎茶" data-price="3200" data-price-label="¥3,200">
+      <div class="product-visual">
+        <img class="product-visual-img" src="/images/product-meotoiwa.png" alt="度会かぶせ茶 上煎茶 — 缶・パウチ">
+        <div class="product-visual-overlay"></div>
+        <span class="product-grade">Watarai · Sencha</span>
+      </div>
+      <div class="product-info">
+        <span class="product-name-ja">度会かぶせ茶 上煎茶</span>
+        <span class="product-name-en">Watarai Kabuse-cha · Sencha</span>
+        <p class="product-desc">宮川の霧が育む、清澄な甘みと繊細な香り。日々の一服に寄り添う、定番の逸品。</p>
+        <div class="product-footer">
+          <span class="product-price">¥3,200<small>/100g</small></span>
+          <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal reveal-delay-2" data-id="3" data-name="伊勢茶 飲み比べセット" data-price="7800" data-price-label="¥7,800">
+      <div class="product-visual">
+        <img class="product-visual-img" src="/images/product-brochure.png" alt="伊勢茶 飲み比べセット — ギフト">
+        <div class="product-visual-overlay"></div>
+        <span class="product-grade">Gift · Set</span>
+        <span class="product-limited">人気No.1</span>
+      </div>
+      <div class="product-info">
+        <span class="product-name-ja">伊勢茶 飲み比べセット</span>
+        <span class="product-name-en">Ise-cha Tasting Set</span>
+        <p class="product-desc">鈴鹿・度会の両産地を一度に。贈り物にも最適な、桐箱入り特別セット。</p>
+        <div class="product-footer">
+          <span class="product-price">¥7,800<small>/set</small></span>
+          <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ CART DRAWER ════════════════════════════ -->
+<div class="cart-drawer-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h2 class="cart-title">Your Selection</h2>
+    <button class="cart-close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <p class="cart-empty">まだ何も選ばれていません。<br><em style="font-size:14px;opacity:.6">Your cart is empty.</em></p>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-subtotal">
+      <span>Subtotal (税込)</span>
+      <strong id="cartTotal">¥0</strong>
+    </div>
+    <p class="cart-tax-note">消費税（10%）込み / Incl. consumption tax</p>
+    <button class="checkout-btn" id="openCheckoutBtn" onclick="openCheckout()" disabled>
+      Proceed to Checkout
+    </button>
+    <div class="square-trust">
+      <div class="sq-icon">■</div>
+      <span>Secured by Square</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHECKOUT MODAL (Square SDK) ═══════════ -->
+<div class="checkout-modal" id="checkoutModal">
+  <div class="checkout-modal-bg" onclick="closeCheckout()"></div>
+  <div class="checkout-modal-inner">
+    <button class="modal-close" onclick="closeCheckout()">✕</button>
+
+    <!-- ─ Success screen ─ -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✓</div>
+      <h3 class="success-title">ご注文ありがとうございます</h3>
+      <p class="success-msg">
+        Thank you for your order.<br>
+        伊勢の茶葉を、大切にお届けします。<br><br>
+        <em style="font-size:12px;opacity:.5">確認メールをご確認ください。</em>
+      </p>
+      <a id="receiptLink" href="#" target="_blank" class="success-receipt" style="display:none">
+        View Receipt →
+      </a>
+    </div>
+
+    <!-- ─ Payment form ─ -->
+    <div id="paymentForm">
+      <div class="modal-header">
+        <span class="modal-label">Checkout · Secured by Square</span>
+        <h2 class="modal-title">Secure Payment.</h2>
+      </div>
+
+      <!-- Order summary -->
+      <div class="modal-order-summary">
+        <div id="modalOrderItems"></div>
+        <div class="modal-order-total">
+          <span>Total (税込)</span>
+          <strong id="modalTotal">¥0</strong>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="buyer-email-field">
+        <label for="buyerEmail">Email Address (for receipt)</label>
+        <input type="email" id="buyerEmail" placeholder="your@email.com" autocomplete="email">
+      </div>
+
+      <!-- Payment tabs -->
+      <div class="payment-method-tabs">
+        <button class="pay-tab active" id="tabCard" onclick="switchTab('card')">💳 Card</button>
+        <button class="pay-tab" id="tabGoogle" onclick="switchTab('google')" disabled>G Pay</button>
+        <button class="pay-tab" id="tabApple" onclick="switchTab('apple')" disabled>⌘ Apple Pay</button>
+      </div>
+
+      <!-- Google Pay container -->
+      <div id="google-pay-button" style="display:none"></div>
+      <!-- Apple Pay container -->
+      <div id="apple-pay-button" style="display:none"></div>
+
+      <!-- Card form -->
+      <div id="card-payment-section">
+        <span class="square-section-label">Card Information</span>
+        <div id="card-container"></div>
+        <button id="pay-button" disabled>
+          Pay — <span id="payBtnTotal">¥0</span>
+        </button>
+      </div>
+
+      <div id="payment-status-container"></div>
+
+      <div class="square-powered">
+        <div class="sq-icon">■</div>
+        <span>Powered by Square · PCI DSS Compliant</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SHOP CTA ═══════════════════════════════ -->
+<section id="shop-cta" style="max-width:100%;padding-left:0;padding-right:0">
+  <div class="cta-circle"></div>
+  <div class="cta-circle"></div>
+  <div class="cta-content">
+    <span class="section-label" style="display:block;text-align:center;margin-bottom:24px">Contact</span>
+    <h2 class="cta-title reveal">Experience<br>Ise-cha.</h2>
+    <span class="cta-subtitle reveal reveal-delay-1">一杯の伊勢茶が、あなたの日常を聖域に変える。</span>
+    <a href="#shop" class="cta-btn reveal reveal-delay-2">Shop Now</a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ═════════════════════════════════ -->
+<footer>
+  <div>
+    <span class="footer-brand">JAPAN TEA <span>ISE-CHA</span></span>
+    <p class="footer-tagline">精神的源流から、一服の静寂を。<br><em style="font-style:italic;font-family:'Cormorant Garamond',serif">A Sip of Serenity.</em></p>
+  </div>
+  <div>
+    <span class="footer-nav-title">Navigate</span>
+    <ul class="footer-nav-links">
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#terroir">Terroir</a></li>
+      <li><a href="#ritual">The Ritual</a></li>
+      <li><a href="#shop">Shop</a></li>
+    </ul>
+  </div>
+  <div>
+    <span class="footer-nav-title">Origin</span>
+    <ul class="footer-nav-links">
+      <li><a href="#">鈴鹿 SUZUKA</a></li>
+      <li><a href="#">度会 WATARAI</a></li>
+      <li><a href="#">伊勢神宮 ISE JINGU</a></li>
+      <li><a href="#">About Kabuse-cha</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span class="footer-copy">© 2025 JAPAN TEA ISE-CHA. All rights reserved.</span>
+  <span class="footer-copy" style="font-style:italic;font-family:'Cormorant Garamond',serif">Made in Ise-Shima, Mie, Japan.</span>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+// ────────────────────────────────────────────
+//  Cursor
+// ────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX - 4 + 'px';
+  cursor.style.top  = mouseY - 4 + 'px';
+});
+(function animRing() {
+  ringX += (mouseX - ringX - 16) * 0.1;
+  ringY += (mouseY - ringY - 16) * 0.1;
+  ring.style.left = ringX + 'px';
+  ring.style.top  = ringY + 'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform='scale(2)'; ring.style.borderColor='rgba(201,169,110,.9)'; });
+  el.addEventListener('mouseleave', () => { cursor.style.transform='scale(1)'; ring.style.borderColor='rgba(201,169,110,.5)'; });
+});
+
+// ────────────────────────────────────────────
+//  Nav
+// ────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').style.background =
+    window.scrollY > 80 ? 'rgba(15,31,23,.95)' : '';
+});
+document.getElementById('menuBtn').addEventListener('click', () => document.getElementById('menuOverlay').classList.add('open'));
+document.getElementById('menuClose').addEventListener('click', () => document.getElementById('menuOverlay').classList.remove('open'));
+document.querySelectorAll('.menu-overlay a').forEach(a => a.addEventListener('click', () => document.getElementById('menuOverlay').classList.remove('open')));
+
+// ────────────────────────────────────────────
+//  Scroll reveal
+// ────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ────────────────────────────────────────────
+//  CART STATE
+// ────────────────────────────────────────────
+let cart = [];
+
+function addToCart(btn) {
+  const card = btn.closest('.product-card');
+  const item = { id: card.dataset.id, name: card.dataset.name, price: parseInt(card.dataset.price), priceLabel: card.dataset.priceLabel, qty: 1 };
+  const existing = cart.find(i => i.id === item.id);
+  existing ? existing.qty++ : cart.push(item);
+
+  btn.textContent = 'Added ✓';
+  btn.classList.add('added');
+  setTimeout(() => { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1500);
+
+  renderCart();
+  openCart();
+}
+
+function renderCart() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  const badge = document.getElementById('cartCount');
+  badge.textContent = count;
+  badge.classList.toggle('visible', count > 0);
+
+  const itemsEl = document.getElementById('cartItems');
+  itemsEl.innerHTML = cart.length === 0
+    ? `<p class="cart-empty">まだ何も選ばれていません。<br><em style="font-size:14px;opacity:.6">Your cart is empty.</em></p>`
+    : cart.map(i => {
+        const thumbMap = { '1': '/images/product-shrine.png', '2': '/images/product-meotoiwa.png', '3': '/images/product-brochure.png' };
+        const thumb = thumbMap[i.id] || '';
+        return `
+      <div class="cart-item">
+        <div class="cart-item-thumb" style="overflow:hidden;padding:0">
+          ${thumb ? `<img src="${thumb}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover;object-position:center">` : ''}
+        </div>
+        <div class="cart-item-details">
+          <div class="cart-item-name">${i.name}</div>
+          <div class="cart-item-price">${i.priceLabel}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+            <span class="qty-num">${i.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" onclick="removeItem('${i.id}')">✕</button>
+      </div>`;
+      }).join('');
+
+  document.getElementById('cartTotal').textContent = `¥${total.toLocaleString()}`;
+  document.getElementById('openCheckoutBtn').disabled = cart.length === 0;
+}
+
+function changeQty(id, d) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += d;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  renderCart();
+}
+function removeItem(id) { cart = cart.filter(i => i.id !== id); renderCart(); }
+
+function openCart()  { document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); }
+function closeCart() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); }
+document.getElementById('cartBtn').addEventListener('click', openCart);
+
+// ────────────────────────────────────────────
+//  SQUARE SDK
+// ────────────────────────────────────────────
+let squareCard = null;
+let squarePayments = null;
+let squareConfig = null;
+
+// サーバーから APP_ID / LOCATION_ID を取得
+async function loadSquareConfig() {
+  if (squareConfig) return squareConfig;
+  try {
+    const res = await fetch('/api/square-config');
+    squareConfig = await res.json();
+    return squareConfig;
+  } catch (e) {
+    console.error('Square config fetch failed', e);
+    return null;
+  }
+}
+
+// Square SDK を動的にロード (env に合わせて sandbox / production)
+async function loadSquareSDK(env) {
+  if (window.Square) return;
+  return new Promise((resolve, reject) => {
+    const src = env === 'production'
+      ? 'https://web.squarecdn.com/v1/square.js'
+      : 'https://sandbox.web.squarecdn.com/v1/square.js';
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function initSquare() {
+  if (squareCard) return;
+
+  const statusEl = document.getElementById('payment-status-container');
+  statusEl.innerHTML = `<p class="payment-loading"><span class="spinner"></span>決済フォームを読み込み中...</p>`;
+
+  const cfg = await loadSquareConfig();
+  if (!cfg) {
+    statusEl.innerHTML = `<p class="payment-error">⚠️ サーバーに接続できません。<br>Node.js サーバーが起動しているか確認してください。</p>`;
+    return;
+  }
+
+  await loadSquareSDK(cfg.env);
+
+  if (!window.Square) {
+    statusEl.innerHTML = `<p class="payment-error">⚠️ Square SDKの読み込みに失敗しました。</p>`;
+    return;
+  }
+
+  try {
+    squarePayments = window.Square.payments(cfg.appId, cfg.locationId);
+
+    // Card
+    squareCard = await squarePayments.card({
+      style: {
+        '.input-container':          { borderColor: 'rgba(201,169,110,.3)', borderRadius: '0px' },
+        '.input-container.is-focus': { borderColor: 'rgba(201,169,110,.8)' },
+        '.input-container.is-error': { borderColor: '#E8A0A0' },
+        'input':                     { backgroundColor: 'rgba(15,31,23,.8)', color: '#F5F0E8', fontFamily: '"Cormorant Garamond", serif', fontSize: '16px' },
+        'input::placeholder':        { color: 'rgba(245,240,232,.25)' },
+        '.message-text':             { color: 'rgba(245,240,232,.5)' },
+      }
+    });
+    await squareCard.attach('#card-container');
+    statusEl.innerHTML = '';
+    document.getElementById('pay-button').disabled = false;
+
+    // Google Pay
+    try {
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      const req = squarePayments.paymentRequest({ countryCode:'JP', currencyCode:'JPY', total:{ amount:String(total), label:'JAPAN TEA ISE-CHA' } });
+      const gp = await squarePayments.googlePay(req);
+      await gp.attach('#google-pay-button');
+      document.getElementById('tabGoogle').disabled = false;
+      gp.addEventListener('ontokenization', e => handleTokenizedPayment(e.detail.tokenResult));
+    } catch(_) {}
+
+    // Apple Pay
+    try {
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      const req = squarePayments.paymentRequest({ countryCode:'JP', currencyCode:'JPY', total:{ amount:String(total), label:'JAPAN TEA ISE-CHA' } });
+      const ap = await squarePayments.applePay(req);
+      await ap.attach('#apple-pay-button');
+      document.getElementById('tabApple').disabled = false;
+      ap.addEventListener('ontokenization', e => handleTokenizedPayment(e.detail.tokenResult));
+    } catch(_) {}
+
+  } catch (err) {
+    statusEl.innerHTML = `<p class="payment-error">⚠️ Square初期化エラー: ${err.message || err}</p>`;
+  }
+}
+
+// ────────────────────────────────────────────
+//  CHECKOUT MODAL
+// ────────────────────────────────────────────
+async function openCheckout() {
+  closeCart();
+  document.getElementById('checkoutModal').classList.add('open');
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('modalOrderItems').innerHTML = cart.map(i =>
+    `<div class="modal-order-row"><span>${i.name} × ${i.qty}</span><span>¥${(i.price*i.qty).toLocaleString()}</span></div>`
+  ).join('');
+  document.getElementById('modalTotal').textContent = `¥${total.toLocaleString()}`;
+  document.getElementById('payBtnTotal').textContent = `¥${total.toLocaleString()}`;
+
+  await initSquare();
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('open');
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('paymentForm').style.display = '';
+  document.getElementById('payment-status-container').innerHTML = '';
+  squareCard = null; squarePayments = null; // reset for next open
+}
+
+function switchTab(tab) {
+  ['card','google','apple'].forEach(t => {
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+  });
+  document.getElementById('card-payment-section').style.display = tab==='card' ? '' : 'none';
+  document.getElementById('google-pay-button').style.display    = tab==='google' ? '' : 'none';
+  document.getElementById('apple-pay-button').style.display     = tab==='apple' ? '' : 'none';
+}
+
+// ────────────────────────────────────────────
+//  PAYMENT EXECUTION
+// ────────────────────────────────────────────
+async function handlePayment() {
+  const btn      = document.getElementById('pay-button');
+  const statusEl = document.getElementById('payment-status-container');
+  if (!squareCard) return;
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Processing...';
+  statusEl.innerHTML = '';
+
+  try {
+    const result = await squareCard.tokenize();
+    if (result.status === 'OK') {
+      await handleTokenizedPayment(result);
+    } else {
+      const msg = result.errors?.map(e => e.message).join(' / ') || '決済に失敗しました';
+      statusEl.innerHTML = `<p class="payment-error">⚠️ ${msg}</p>`;
+      resetPayBtn(btn);
+    }
+  } catch (err) {
+    statusEl.innerHTML = `<p class="payment-error">⚠️ ${err.message}</p>`;
+    resetPayBtn(btn);
+  }
+}
+
+async function handleTokenizedPayment(tokenResult) {
+  const btn      = document.getElementById('pay-button');
+  const statusEl = document.getElementById('payment-status-container');
+
+  if (tokenResult.status !== 'OK') {
+    const msg = tokenResult.errors?.map(e => e.message).join(' / ') || '決済に失敗しました';
+    statusEl.innerHTML = `<p class="payment-error">⚠️ ${msg}</p>`;
+    resetPayBtn(btn);
+    return;
+  }
+
+  const total     = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const email     = document.getElementById('buyerEmail')?.value?.trim();
+  const items     = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price }));
+
+  try {
+    const res = await fetch('/api/payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sourceId:    tokenResult.token,
+        amount:      total,        // 円 (JPY)
+        currency:    'JPY',
+        items,
+        buyerEmail:  email || undefined,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // Show receipt link if available
+      if (data.receiptUrl) {
+        const rl = document.getElementById('receiptLink');
+        rl.href = data.receiptUrl;
+        rl.style.display = 'inline-block';
+      }
+      showSuccess();
+    } else {
+      statusEl.innerHTML = `<p class="payment-error">⚠️ ${data.error || '決済処理に失敗しました'}</p>`;
+      resetPayBtn(btn);
+    }
+  } catch (err) {
+    statusEl.innerHTML = `<p class="payment-error">⚠️ サーバーエラー: ${err.message}<br><em style="font-size:12px;opacity:.6">node server.js が起動中か確認してください</em></p>`;
+    resetPayBtn(btn);
+  }
+}
+
+function resetPayBtn(btn) {
+  if (!btn) return;
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  btn.disabled = false;
+  btn.innerHTML = `Pay — ¥${total.toLocaleString()}`;
+}
+
+function showSuccess() {
+  document.getElementById('paymentForm').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  cart = []; renderCart();
+  squareCard = null; squarePayments = null;
+}
+
+// ESC
+document.addEventListener('keydown', e => { if (e.key==='Escape') { closeCart(); closeCheckout(); } });
+</script>
+</body>
+</html>
