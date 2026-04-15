@@ -934,6 +934,12 @@ async function initSquare() {
     return;
   }
 
+  // 環境変数チェック
+  if (!cfg.appId || !cfg.locationId) {
+    statusEl.innerHTML = `<p class="payment-error">⚠️ Square設定が未設定です。<br><em style="font-size:12px;opacity:.6">Render の Environment に SQUARE_APP_ID / SQUARE_LOCATION_ID を設定してください。</em></p>`;
+    return;
+  }
+
   try {
     squarePayments = window.Square.payments(cfg.appId, cfg.locationId);
 
